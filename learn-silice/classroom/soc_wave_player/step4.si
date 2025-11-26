@@ -82,6 +82,11 @@ $$if not SDCARD then
   uint1  sd_miso(0);
 $$end
 
+$$if not BUTTONS then
+  // for simulation ('fake' inputs/outputs)
+  uint7 btns(0);
+$$end
+
 $$if not AUDIO then
   // for simulation ('fake' inputs/outputs)
   uint4 audio_l(0);
@@ -116,7 +121,7 @@ $$end
     uint1 display_direct_access  = prev_mem_addr[ 1,1];
     uint1 display_reset_access   = prev_mem_addr[ 2,1];
     uint1 sd_access              = prev_mem_addr[ 5,1];
-    uint1 btn_access            = prev_mem_addr[ 6,1];
+    uint1 button_access          = prev_mem_addr[ 6,1];
 	  // ---- memory access CPU <-> BRAM (reads and writes)
     // reads  RAM, peripherals => CPU
     memio.rdata   = // read data is either from memory or SOC peripherals
@@ -124,8 +129,7 @@ $$end
        (~peripheral_r                  ? ram.rdata          : 32b0)
        // CPU reading from peripherals
      | ((peripheral_r & sd_access)     ? {31b0,    sd_miso} : 32b0)
-       // Button read states
-     | ((peripheral_r & btn_access)    ? {25b0, btns}       : 32b0)
+     | ((peripheral_r & button_access) ? {25b0,       btns} : 32b0)
     ;
     // writes CPU => RAM
     ram.wenable = memio.wenable & {4{~memio.addr[$periph_bit$,1]}};

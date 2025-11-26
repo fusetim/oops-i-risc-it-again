@@ -26,8 +26,14 @@ void main()
   sdcard_init();
   // initialise File IO Library
   fl_init();
+  display_set_cursor(0,0);
+  display_set_front_back_color(0,255);
+  printf("    ==== loading ====    \n\n");
+  display_refresh();
+  display_set_front_back_color(255,0);
   // attach media access functions to library
   while (fl_attach_media(sdcard_readsector, sdcard_writesector) != FAT_INIT_OK) {
+    printf(".");
     // keep trying, we need this
   }
   // header
