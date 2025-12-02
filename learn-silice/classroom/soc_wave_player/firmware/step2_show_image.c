@@ -30,13 +30,20 @@ void main()
   display_refresh();
   // init sdcard
   sdcard_init();
+  printf("sdcard_init: ok\n");
+  display_refresh();
   // initialise File IO Library
   fl_init();
+  printf("fl_init: ok\n");
+  display_refresh();
   // attach media access functions to library
   while (fl_attach_media(sdcard_readsector, sdcard_writesector) != FAT_INIT_OK) {
     // try again, we need this
+    printf(".");
+    display_refresh();
   }
   printf("done.\n");
+  display_refresh();
   // open the image file
   FL_FILE *f = fl_fopen("/img.raw","rb");
   if (f == NULL) {

@@ -165,6 +165,8 @@ void sdcard_init()
 {
   unsigned char status;
   sdcard_while_loading_callback = sdcard_idle;
+  printf("SDCARD init...\n");
+  display_refresh();
   while (1) {
     sdcard_preinit();
     sdcard_cmd(cmd0);
@@ -175,6 +177,8 @@ void sdcard_init()
     }
     pause(20000000);
   }
+  printf("SDCARD CMD8...\n");
+  display_refresh();
   sdcard_cmd(cmd8);
   status = sdcard_get(40,1);
   sdcard_ponder();
@@ -185,13 +189,17 @@ void sdcard_init()
     sdcard_cmd(acmd41);
     status = sdcard_get(8,1);
     sdcard_ponder();
+    printf("SDCARD status %d...\n", status);
+    display_refresh();
     if (status == 0) {
       break;
     }
     pause(2000000);
   }
   sdcard_cmd(cmd16);
-  sdcard_get(8,1);
+  char dbgc = sdcard_get(8,1);
+  printf("SDCARD sdcard_get %d...\n", dbgc);
+  display_refresh();
   sdcard_ponder();
 }
 
